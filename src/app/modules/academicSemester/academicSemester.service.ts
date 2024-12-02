@@ -29,7 +29,7 @@ const getAcademicSemesterByIdFromDB = async (id: string) => {
 // update academic semester by id from db
 const updateAcademicSemesterByIdFromDB = async (
   id: string,
-  payload: TAcademicSemester,
+  payload: Partial<TAcademicSemester>,
 ) => {
   if (
     payload.name &&

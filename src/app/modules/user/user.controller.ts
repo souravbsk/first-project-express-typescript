@@ -1,7 +1,7 @@
 import { UserService } from './user.service';
-import sendResponse from '../../app/utils/sendResponse';
 import { StatusCodes } from 'http-status-codes';
-import createAsync from '../../app/utils/catchAsync';
+import createAsync from '../../utils/catchAsync';
+import sendResponse from '../../utils/sendResponse';
 
 const createStudent = createAsync(async (req, res, next) => {
   try {

@@ -6,9 +6,8 @@ import {
   StudentModel,
   TUserName,
 } from './student.interface';
-import validator from 'validator';
-import config from '../../app/config';
 import bcrypt from 'bcrypt';
+import config from '../../config';
 const UserNameSchema = new Schema<TUserName>({
   firstName: {
     type: String,
@@ -113,17 +112,14 @@ const studentSchema = new Schema<TStudent, StudentModel>(
       }, // restrict to only these values
     },
     dateOfBirth: {
-      type: Date,
+      type: String,
     },
     email: {
       type: String,
-      required: true,
+      required: [true, 'Email is required'],
       unique: true,
-      validate: {
-        validator: (value) => validator.isEmail(value),
-        message: '{VALUE} is not a valid email',
-      },
     },
+
     contactNo: {
       type: String,
       required: true,
@@ -205,7 +201,6 @@ studentSchema.pre('findOne', function (next) {
 
 // for aggregation
 studentSchema.pre('aggregate', function (next) {
-  console.log(this.pipeline());
   this.pipeline().unshift({ $match: { isDeleted: { $ne: true } } });
   next();
   // this.pipeline().match({ isDeleted: { $ne: true } });

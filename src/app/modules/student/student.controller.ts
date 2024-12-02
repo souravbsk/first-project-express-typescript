@@ -1,8 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { StudentServices } from './student.service';
-import sendResponse from '../../app/utils/sendResponse';
 import { StatusCodes } from 'http-status-codes';
-import createAsync from '../../app/utils/catchAsync';
+import createAsync from '../../utils/catchAsync';
+import sendResponse from '../../utils/sendResponse';
+
 // import StudentValidationSchema from './student.validation';
 
 const getAllStudents = createAsync(async (req, res) => {

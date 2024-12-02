@@ -1,7 +1,7 @@
 import { StatusCodes } from 'http-status-codes';
-import createAsync from '../../app/utils/catchAsync';
-import sendResponse from '../../app/utils/sendResponse';
 import { AcademicSemesterServices } from './academicSemester.service';
+import createAsync from '../../utils/catchAsync';
+import sendResponse from '../../utils/sendResponse';
 
 const createAcademicSemester = createAsync(async (req, res) => {
   const result = await AcademicSemesterServices.createAcademicSemesterIntoDB(

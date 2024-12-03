@@ -1,12 +1,25 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { StudentServices } from './student.service';
 import { StatusCodes } from 'http-status-codes';
-import createAsync from '../../utils/catchAsync';
 import sendResponse from '../../utils/sendResponse';
+import catchAsync from '../../utils/catchAsync';
 
 // import StudentValidationSchema from './student.validation';
 
-const getAllStudents = createAsync(async (req, res) => {
+const updateStudent = catchAsync(async (req, res) => {
+  const { studentId } = req.params;
+  const { student } = req.body;
+  const result = await StudentServices.updateStudentIntoDB(studentId, student);
+
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: 'Student is updated succesfully',
+    data: result,
+  });
+});
+
+const getAllStudents = catchAsync(async (req, res) => {
   const result = await StudentServices.getAllStudentsFromDB();
   if (result) {
     sendResponse(res, {
@@ -18,7 +31,7 @@ const getAllStudents = createAsync(async (req, res) => {
   }
 });
 
-const getStudentById = createAsync(async (req, res) => {
+const getStudentById = catchAsync(async (req, res) => {
   const { studentId } = req.params;
   const result = await StudentServices.getSingleStudentFromDB(studentId);
   if (result) {
@@ -31,7 +44,7 @@ const getStudentById = createAsync(async (req, res) => {
   }
 });
 
-const deleteStudent = createAsync(async (req, res) => {
+const deleteStudent = catchAsync(async (req, res) => {
   const { studentId } = req.params;
   const result = await StudentServices.deleteStudentFromDB(studentId);
   if (result) {
@@ -48,4 +61,5 @@ export const StudentControllers = {
   getAllStudents,
   getStudentById,
   deleteStudent,
+  updateStudent,
 };

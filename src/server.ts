@@ -2,12 +2,15 @@ import mongoose from 'mongoose';
 import config from './app/config';
 import app from './app';
 
-console.log(config.database_url);
+import { Server } from 'http';
+
+let server: Server;
+
 async function main() {
   try {
     await mongoose.connect(config.database_url as string);
 
-    app.listen(config.port, () => {
+    server = app.listen(config.port, () => {
       console.log(`Example server listening on port ${config.port}`);
     });
   } catch (err) {
@@ -16,3 +19,18 @@ async function main() {
 }
 
 main();
+
+process.on('unhandledRejection', () => {
+  console.error('👹  Unhandled promise rejection:');
+  if (server) {
+    server.close(() => {
+      process.exit(1);
+    });
+  }
+  process.exit(1);
+});
+
+process.on('uncaughtException', () => {
+  console.error('👹  uncaughtException promise rejection:');
+  process.exit(1);
+});

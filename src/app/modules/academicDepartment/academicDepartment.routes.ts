@@ -11,12 +11,12 @@ router.post(
   ),
   AcademicDepartmentControllers.createAcademicFaculty,
 );
-router.get('/', AcademicDepartmentControllers.getAllAcademicDepartment);
-
 router.get(
   '/:departmentId',
   AcademicDepartmentControllers.getSIngleAcademicDepartment,
 );
+router.get('/', AcademicDepartmentControllers.getAllAcademicDepartment);
+
 router.patch(
   '/:departmentId',
 

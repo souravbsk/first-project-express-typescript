@@ -16,11 +16,15 @@ app.use(cors());
 
 app.use('/api/v1', router);
 
-app.get('/', (req: Request, res: Response) => {
-  const a = 22;
+const test = async (req: Request, res: Response) => {
+  Promise.reject();
 
-  res.send(a);
-});
+  // const a = 22;
+
+  // res.send(a);
+};
+
+app.get('/', test);
 
 // error handling
 app.use(globalErrorHandler);

@@ -2,6 +2,7 @@ import { StatusCodes } from 'http-status-codes';
 import { AcademicSemesterServices } from './academicSemester.service';
 import catchAsync from '../../utils/catchAsync';
 import sendResponse from '../../utils/sendResponse';
+import AppError from '../../errors/AppError';
 
 const createAcademicSemester = catchAsync(async (req, res) => {
   const result = await AcademicSemesterServices.createAcademicSemesterIntoDB(
@@ -19,7 +20,9 @@ const createAcademicSemester = catchAsync(async (req, res) => {
 // get all academic semester
 
 const getAllAcademicSemester = catchAsync(async (req, res) => {
-  const result = await AcademicSemesterServices.getAllAcademicSemesterFromDB();
+  const result = await AcademicSemesterServices.getAllAcademicSemesterFromDB(
+    req.query,
+  );
 
   if (result) {
     sendResponse(res, {
@@ -36,7 +39,7 @@ const getAllAcademicSemester = catchAsync(async (req, res) => {
 const getAcademicSemesterById = catchAsync(async (req, res) => {
   const semesterId = req.params.semesterId;
   if (!semesterId) {
-    throw new Error('semester id is required');
+    throw new AppError(StatusCodes.NOT_FOUND, 'semester id is required');
   }
 
   const result =
@@ -55,7 +58,7 @@ const getAcademicSemesterById = catchAsync(async (req, res) => {
 const updateAcademicSemesterById = catchAsync(async (req, res) => {
   const semesterId = req.params.semesterId;
   if (!semesterId) {
-    throw new Error('semester id is required');
+    throw new AppError(StatusCodes.NOT_FOUND, 'semester id is required');
   }
   const result =
     await AcademicSemesterServices.updateAcademicSemesterByIdFromDB(

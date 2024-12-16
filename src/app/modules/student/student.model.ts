@@ -6,8 +6,7 @@ import {
   StudentModel,
   TUserName,
 } from './student.interface';
-import bcrypt from 'bcrypt';
-import config from '../../config';
+
 const UserNameSchema = new Schema<TUserName>({
   firstName: {
     type: String,
@@ -15,13 +14,6 @@ const UserNameSchema = new Schema<TUserName>({
 
     required: [true, 'First Name is required'],
     maxlength: [20, "First Name can't be longer than 20 characters"],
-    // validate: {
-    //   validator: function (value) {
-    //     const firstNameStr = value.charAt(0).toUpperCase() + value.slice(1); // capitalize first letter
-    //     return firstNameStr === value;
-    //   },
-    //   message: 'First Name should start with a capital letter',
-    // },
   },
   middleName: {
     type: String,
@@ -29,10 +21,6 @@ const UserNameSchema = new Schema<TUserName>({
   lastName: {
     type: String,
     required: [true, 'Last Name is required'],
-    // validate: {
-    //   validator: (value: string) => validator.isAlpha(value),
-    //   message: '{VALUE} is Not valid',
-    // },
   },
 });
 
@@ -90,11 +78,6 @@ const studentSchema = new Schema<TStudent, StudentModel>(
       required: [true, 'User is required'],
       unique: true,
       ref: 'User',
-    },
-    password: {
-      type: String,
-      required: true,
-      maxlength: [20, 'password can not be more than 20 characters'],
     },
 
     name: {
@@ -155,6 +138,10 @@ const studentSchema = new Schema<TStudent, StudentModel>(
       type: Schema.Types.ObjectId,
       ref: 'AcademicSemester',
     },
+    academicDepartment: {
+      type: Schema.Types.ObjectId,
+      ref: 'AcademicDepartment',
+    },
 
     isDeleted: {
       type: Boolean,
@@ -172,22 +159,7 @@ const studentSchema = new Schema<TStudent, StudentModel>(
 
 studentSchema.virtual('fullName').get(function () {
   console.log('first');
-  return `${this.name.firstName} ${this.name.middleName}  ${this.name.lastName}`;
-});
-
-// middleware save data pre check
-studentSchema.pre('save', async function (next) {
-  // eslint-disable-next-line @typescript-eslint/no-this-alias
-  const user = this;
-
-  user.password = await bcrypt.hash(user.password, Number(config.saltRound));
-
-  next();
-});
-
-studentSchema.post('save', function (doc, next) {
-  doc.password = '';
-  next();
+  return `${this?.name?.firstName} ${this?.name?.middleName}  ${this?.name?.lastName}`;
 });
 
 studentSchema.pre('find', function (next) {

@@ -1,6 +1,7 @@
 import { model, Schema } from 'mongoose';
 import { TUser } from './user.interface';
-
+import bcrypt from 'bcrypt';
+import config from '../../config';
 const userSchema = new Schema<TUser>(
   {
     id: {
@@ -18,7 +19,7 @@ const userSchema = new Schema<TUser>(
     },
     role: {
       type: String,
-      enum: ['student', ' ', 'admin'],
+      enum: ['student', 'faculty', 'admin'],
     },
     status: {
       type: String,
@@ -35,5 +36,21 @@ const userSchema = new Schema<TUser>(
   },
 );
 
+// middleware save data pre check
+userSchema.pre('save', async function (next) {
+  // eslint-disable-next-line @typescript-eslint/no-this-alias
+  const user = this;
+
+  user.password = await bcrypt.hash(user.password, Number(config.saltRound));
+
+  next();
+});
+
+userSchema.post('save', function (doc, next) {
+  doc.password = '';
+  next();
+});
+
 const User = model<TUser>('User', userSchema);
+
 export default User;

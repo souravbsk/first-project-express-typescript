@@ -1,10 +1,16 @@
-import { academicSemesterNameCodeMapper } from './academicSemester.constant';
+import { StatusCodes } from 'http-status-codes';
+import AppError from '../../errors/AppError';
+import {
+  academicSemesterField,
+  academicSemesterNameCodeMapper,
+} from './academicSemester.constant';
 import { TAcademicSemester } from './academicSemester.interface';
 import { AcademicSemester } from './academicSemester.model';
+import QueryBuilder from '../../builder/QueryBuilder';
 
 const createAcademicSemesterIntoDB = async (payload: TAcademicSemester) => {
   if (academicSemesterNameCodeMapper[payload.name] !== payload.code) {
-    throw new Error('Invalid semester code');
+    throw new AppError(StatusCodes.BAD_REQUEST, 'Invalid semester code');
   }
 
   const result = await AcademicSemester.create(payload);
@@ -12,8 +18,14 @@ const createAcademicSemesterIntoDB = async (payload: TAcademicSemester) => {
 };
 
 // get all academic code from db
-const getAllAcademicSemesterFromDB = async () => {
-  const result = AcademicSemester.find();
+const getAllAcademicSemesterFromDB = async (query: Record<string, unknown>) => {
+  const academicSemesterQuery = new QueryBuilder(AcademicSemester.find(), query)
+    .search(academicSemesterField)
+    .filter()
+    .sort()
+    .paginate()
+    .fields();
+  const result = await academicSemesterQuery.modelQuery;
   return result;
 };
 
@@ -21,7 +33,7 @@ const getAllAcademicSemesterFromDB = async () => {
 const getAcademicSemesterByIdFromDB = async (id: string) => {
   const result = AcademicSemester.findById(id);
   if (!result) {
-    throw new Error('Academic Semester not found');
+    throw new AppError(StatusCodes.NOT_FOUND, 'Academic Semester not found');
   }
   return result;
 };
@@ -36,13 +48,16 @@ const updateAcademicSemesterByIdFromDB = async (
     payload.code &&
     academicSemesterNameCodeMapper[payload.name] !== payload.code
   ) {
-    throw new Error('Invalid Semester Code');
+    throw new AppError(StatusCodes.BAD_REQUEST, 'Invalid Semester Code');
   }
 
   const result = AcademicSemester.findByIdAndUpdate(id, payload, { new: true });
 
   if (!result) {
-    throw new Error('Failed to update Academic Semester');
+    throw new AppError(
+      StatusCodes.BAD_REQUEST,
+      'Failed to update Academic Semester',
+    );
   }
 
   return result;

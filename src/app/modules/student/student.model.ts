@@ -133,7 +133,7 @@ const studentSchema = new Schema<TStudent, StudentModel>(
       type: localGuardianSchema,
       required: true,
     },
-    profileImg: { type: String },
+    profileImg: { type: String, default: '' },
     admissionSemester: {
       type: Schema.Types.ObjectId,
       ref: 'AcademicSemester',
@@ -141,6 +141,10 @@ const studentSchema = new Schema<TStudent, StudentModel>(
     academicDepartment: {
       type: Schema.Types.ObjectId,
       ref: 'AcademicDepartment',
+    },
+    academicFaculty: {
+      type: Schema.Types.ObjectId,
+      ref: 'AcademicFaculty',
     },
 
     isDeleted: {
@@ -175,8 +179,6 @@ studentSchema.pre('findOne', function (next) {
 studentSchema.pre('aggregate', function (next) {
   this.pipeline().unshift({ $match: { isDeleted: { $ne: true } } });
   next();
-  // this.pipeline().match({ isDeleted: { $ne: true } });
-  // next();
 });
 
 // creating a custom static method in mongoose model

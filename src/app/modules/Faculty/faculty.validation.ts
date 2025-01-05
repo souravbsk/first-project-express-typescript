@@ -28,7 +28,7 @@ export const createFacultyValidationSchema = z.object({
       presentAddress: z.string(),
       permanentAddress: z.string(),
       academicDepartment: z.string(),
-      profileImg: z.string(),
+      profileImg: z.string().url().optional(),
     }),
   }),
 });
@@ -53,7 +53,7 @@ export const updateFacultyValidationSchema = z.object({
       presentAddress: z.string().optional(),
       permanentAddress: z.string().optional(),
       profileImg: z.string().optional(),
-      academicDepartment: z.string().optional(),
+      academicDepartment: z.string().url().optional(),
     }),
   }),
 });

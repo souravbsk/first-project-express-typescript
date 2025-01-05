@@ -4,8 +4,6 @@ import { StatusCodes } from 'http-status-codes';
 import sendResponse from '../../utils/sendResponse';
 import catchAsync from '../../utils/catchAsync';
 
-// import StudentValidationSchema from './student.validation';
-
 const updateStudent = catchAsync(async (req, res) => {
   const { studentId } = req.params;
   const { student } = req.body;
@@ -26,7 +24,8 @@ const getAllStudents = catchAsync(async (req, res) => {
       statusCode: StatusCodes.OK,
       success: true,
       message: 'Students retrieved successfully',
-      data: result,
+      meta: result.meta,
+      data: result.result,
     });
   }
 });
